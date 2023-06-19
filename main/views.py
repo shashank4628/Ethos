@@ -24,7 +24,9 @@ def Login(request):
             login(request, user)
             return redirect('/homepage/')
         else:
+            print(user)
             # Display an error message
+            # print("not found")
             pass
     return render(request, 'main/login.html')
 
@@ -36,12 +38,14 @@ def sign_up(request):
   
     if request.method == 'POST':
         form=UserRegisterForm(request.POST)
-        print('hello')
+        # print('hello')
         if form.is_valid():
-            print('hello')
+            # print('hello')
+            pass
         try:  
             form.save()
             username=form.cleaned_data.get('username')
+            print("account created")
             messages.success(request,f'Account created for {username}')
         except Exception as e:
             print(e)   
@@ -134,12 +138,9 @@ def deletecomment(request,pk):
     if request.method=='POST':
         print(pk)
         tst=TimeStamp.objects.get(pk=pk)
-        audio = Audio.objects.filter(id=tst.audio.id)
         tst.delete()
         id=request.POST.get('hiddenfield')
-        print(id)
-        print(audio)
-        id = request.POST.get('hiddenfield')
+        
     return redirect('/audio_detail/' + str(id))
 
 def delete_audio(request,pk):
