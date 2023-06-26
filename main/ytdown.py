@@ -1,9 +1,11 @@
 from pytube import YouTube
 from . models import Audio
 import random
+import yt_dlp
 import datetime
-
+import ytdl
 def download(link,request):
+    # ytdl audio link
     youtube_1=YouTube(link)
     videos=youtube_1.streams.filter(only_audio=True)
     path='main/static/main/audio/'
@@ -18,5 +20,17 @@ def download(link,request):
     saveaudio.url = link
     saveaudio.save()
     return saveaudio.id    
-# print("done")
-# print(youtube_1.title)
+
+# URLS = ['https://www.youtube.com/watch?v=BaW_jenozKc']
+
+# ydl_opts = {
+#     'format': 'm4a/bestaudio/best',
+#     # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
+#     'postprocessors': [{  # Extract audio using ffmpeg
+#         'key': 'FFmpegExtractAudio',
+#         'preferredcodec': 'm4a',
+#     }]
+# }
+
+# with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+#     error_code = ydl.download(URLS)
