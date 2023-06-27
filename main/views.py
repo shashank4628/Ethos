@@ -92,7 +92,11 @@ def download_view(request):
     if request.method=='POST':
         url = request.POST.get("url")
         id = download(url,request)
-        return redirect('/audio_detail/'+ str(id))
+        if id != -1:
+            return redirect('/audio_detail/'+ str(id))
+        else:
+            return render(request,'main/noaudio.html') 
+
 
     return render(request, 'download.html', {'url': url})
 

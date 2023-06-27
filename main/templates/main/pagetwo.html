@@ -154,7 +154,7 @@
         <button type="submit" style="border: none;padding-right: 4px;"><i class="fa fa-close"></i></button>
         <input type="hidden" name="hiddenfield" value="{{audio.id}}">
       </form>
-      <div id="{{a.id}}" data-time='{{a.time|time:"i:s"}}' class="comment-time" onclick="TimeChange({{a.id}})">
+      <div id="{{a.id}}" data-time='{{a.time|time:"i:s"}}' class="comment-time" onclick="TimeChange(a.id)">
         {{a.time |time:"i:s"}} :
       </div>
       <div class="comment-comment">
@@ -220,7 +220,7 @@
                 <div class="progress-bar" id="bar">
                 </div>
                 {% for a in comments %}
-                <div id="dot{{a.id}}" data-time='{{a.time|time:"i:s"}}' class="dotss" onclick="TimeChange({{a.id}})"><i
+                <div id="dot{{a.id}}" data-time='{{a.time|time:"i:s"}}' class="dotss" onclick="TimeChange(a.id)"><i
                     class="fa fa-circle sss"></i></div>
                 {% endfor %}
 
