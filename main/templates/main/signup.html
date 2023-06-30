@@ -64,7 +64,7 @@
     body {
       background-size: cover;
       font-family: sans-serif;
-      background-color: rgb(53, 51, 51);
+      background-color: rgb(110, 0, 220);
     }
     .login-wrapper {
       height: 100vh;
@@ -78,10 +78,10 @@
       width: 100%;
       max-width: 380px;
       padding: 80px 40px 40px;
-      background: rgba(0, 0, 0, 0.7);
+      background: white;
       border-radius: 10px;
-      color: #fff;
-      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+      color: rgb(110, 0, 220); /* Change here for color of text in form */
+      box-shadow: 0 15px 25px rgb(110, 0, 220);
     }
     .form::before {
       content: "";
@@ -108,7 +108,7 @@
       text-align: center;
       letter-spacing: 1px;
       margin-bottom: 2rem;
-      color: white;
+      color: rgb(110, 0, 220);
     }
     .form .input-group {
       position: relative;
@@ -120,7 +120,7 @@
       letter-spacing: 1px;
       margin-bottom: 30px;
       border: none;
-      border-bottom: 1px solid #fff;
+      border-bottom: 1px solid rgb(110, 0, 220); /* To change the color of the bottom border us here*/
       outline: none;
       background-color: transparent;
       color: inherit;
@@ -146,7 +146,7 @@
       margin-left: auto;
       border: none;
       outline: none;
-      background: #ff652f;
+      background: rgb(110, 0, 220);
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -163,7 +163,7 @@
 
     .signup-btn {
         text-decoration: underline;
-        text-decoration-color: #ff652f;
+        text-decoration-color: rgb(110, 0, 220);
     }
 
     #forgot-pw {
@@ -201,7 +201,7 @@
     <div class="login-wrapper">
       <form class="form" method="post" action="{% url 'signUp' %}">
         {% csrf_token %}
-        <h2>Sign Up</h2>
+        <h2 style="color:rgb(110, 0, 220);">Sign Up</h2>
         <div class="input-group">
             <label>Name</label>
             <br>
@@ -224,7 +224,7 @@
             <br>
             {{form.password2}}
           </div>
-          <button type="submit" class="submit-btn">Create User</button>
+          <button type="submit" class="submit-btn" style="color:white;">Create User</button>
         </form>
         </div>
   </body>
