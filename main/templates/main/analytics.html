@@ -14,6 +14,10 @@
   margin: 0%;
 }
 
+body{
+  background-color: #5a49c1;
+}
+
 .audiodetail {
   width: 100vw;
   height: fit-content;
@@ -74,9 +78,11 @@
   margin-left: 20%;
   padding: 5%;
   margin-top: 5%;
-  background-color: rgb(51, 189, 235);
-  box-shadow: 0px 8px 10px gray, -10px 8px 15px gray, 10px 8px 15px gray;
-  border-radius: 0px 30px 0px 30px;
+  background-color: white;
+  /* box-shadow: 0px 8px 20px gray, -10px 8px 15px gray, 10px 8px 15px gray; */
+  /* border-radius: 0px 30px 0px 30px; */
+  border-radius: 10px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
 }
 
 .audioname {
@@ -156,18 +162,20 @@
           
    
         </form>
-    </div>--><p style="font-size: 48px;font-weight: 700; text-align: center; margin-top: 20px;">Analysis of speech in the audio</p>
-    <div class="body" style="height:30vh ;">
-        
+    </div>--><p style="color:white;font-size: 48px;font-weight: 700; text-align: center; margin-top: 20px;">Analysis of speech in the audio</p>
+    <div class="body" style="height:40vh ;">
+        <div style="margin-top:-60px;margin-bottom: 40px;text-align: right;margin-right: -40px;">
+          <a href="" style="text-decoration: none;">Back to Audio</a> 
+        </div>
 
           
          
         <div>
             
-            <div><p style="text-align:center ; font-size:32px; color:#ffffff">Negative Score : <span style="color:red ;">{{context.negative}}</span></p> </div>
-            <div><p style="text-align:center ; font-size:32px; color:#ffffff">Positive Score : <span style="color:red ;">{{context.positive}}</span></p></div>
-            <div><p style="text-align:center ; font-size:32px; color:#ffffff">Neutral Score: <span style="color:red ;">{{context.neutral}}</span></p> </div>
-            <div><p style="text-align:center ; font-size:42px; color:#ffffff; position: relative; top: 100px;">Positive Ratio :  <span style="color:red ;">{{context.ratio}}</span></p> </div>
+            <div><p style="text-align:center ; font-size:32px; color:#5a49c1">Negative Score : <span style="color:rgb(110, 0, 220) ;">{{context.negative}}</span></p> </div>
+            <div><p style="text-align:center ; font-size:32px; color:#5a49c1">Positive Score : <span style="color:rgb(110, 0, 220) ;">{{context.positive}}</span></p></div>
+            <div><p style="text-align:center ; font-size:32px; color:#5a49c1">Neutral Score: <span style="color:rgb(110, 0, 220);">{{context.neutral}}</span></p> </div>
+            <div><p style="text-align:center ; font-size:42px; color:#5a49c1; position: relative; top: 100px;">Positive Ratio :  <span style="color:rgb(110, 0, 220) ;">{{context.ratio}}</span></p> </div>
         </div> 
         
       
