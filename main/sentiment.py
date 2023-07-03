@@ -1,6 +1,11 @@
-import json
+import json,os
 from .yt_extractor import get_video_info, get_audio_url
 from .speech import save_transcript
+import requests
+import json
+import time
+from .api_secrets import API_KEY_ASSEMBLYAI
+from .models import Audio
 
 
 
@@ -52,17 +57,43 @@ from .speech import save_transcript
 #     if rn >0.8:
 #         print(f"This is a hate speech")
 
+upload_endpoint = 'https://api.assemblyai.com/v2/upload'
+transcript_endpoint = 'https://api.assemblyai.com/v2/transcript'
 
+headers_auth_only = {'authorization': API_KEY_ASSEMBLYAI}
+
+headers = {
+    "authorization": API_KEY_ASSEMBLYAI,
+    "content-type": "application/json"
+}
+
+CHUNK_SIZE = 5_242_880  # 5MB
+
+
+def upload(filename):
+    def read_file(filename):
+        with open(filename, 'rb') as f:
+            while True:
+                data = f.read(CHUNK_SIZE)
+                if not data:
+                    break
+                yield data
+
+    upload_response = requests.post(upload_endpoint, headers=headers_auth_only, data=read_file(filename))
+    return upload_response.json()['upload_url']
 
 def save_video_sentiments(request,url):
     video_info = get_video_info(url)
     url = get_audio_url(video_info)
     if url:
         title = video_info['title']
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(script_dir, "static/main/audio/"+title+".mp3")
         title = title.strip().replace(" ", "_")
         Title=title
         title = "data/" + title
-        save_transcript(request,url, title, sentiment_analysis=True)
+        upload_url=upload(filename)
+        save_transcript(request,upload_url, title, sentiment_analysis=True)
         return Title
 
 def printAnalysis(request,url):

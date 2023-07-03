@@ -159,18 +159,22 @@ def delete_audio(request,pk):
 def Analytics(request,pk):
     # print(getURL(request))
     audio = Audio.objects.get(id=pk)
+    print(audio.url)
     if audio.positive==0 and audio.negative==0 and audio.neutral==0:
-        print(Audio.objects.get(id=pk).url)
         printAnalysis(request,Audio.objects.get(id=pk).url)
     return redirect('/audio_analysis/' + str(pk))
 @login_required
-def Analysis(request,pk):
+def Analysis(request, pk):
     audio = Audio.objects.get(id=pk)
-    pr=(audio.positive)/(audio.negative+audio.positive)
-    context={
+    if audio.negative + audio.positive != 0:
+        pr = audio.positive / (audio.negative + audio.positive)
+    else:
+        pr = 0.0
+
+    context = {
         'positive': audio.positive,
         'negative': audio.negative,
         'neutral': audio.neutral,
         'ratio': pr
     }
-    return render (request,'main/analytics.html', {'context': context})
+    return render(request, 'main/analytics.html', {'context': context})
