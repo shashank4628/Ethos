@@ -10,6 +10,8 @@ def download(link,request):
     # ytdl audio link
     output_directory = "main/static/main/audio/"
     output_format = output_directory+'%(title)s.%(ext)s'
+    user =request.user
+
     with YoutubeDL() as ydl: 
         info_dict = ydl.extract_info(link, download=False)
         video_title = info_dict.get('title', None)
@@ -19,16 +21,22 @@ def download(link,request):
             vars=subprocess.run(['mv','ethos/'+str(video_title)+'.mp3','~/main/static/main/audio'])
             print(vars.returncode)
             # path='main/static/main/audio/'
-            filename=str(video_title)+'.mp3'
-            path='main/audio/'
-            tempath=path +filename
-            saveaudio=Audio()
-            saveaudio.audioname = str(video_title)
-            saveaudio.audioFile=tempath
-            saveaudio.uploaded_by_id = request.user.id
-            saveaudio.url = link
-            saveaudio.save()
-            return saveaudio.id
+            audio_objects_check = Audio.objects.filter(uploaded_by = user)
+            audio_object_check = audio_objects_check.filter(url = link).first()
+            if not audio_object_check:
+
+                filename=str(video_title)+'.mp3'
+                path='main/audio/'
+                tempath=path +filename
+                saveaudio=Audio()
+                saveaudio.audioname = str(video_title)
+                saveaudio.url = link
+                saveaudio.audioFile=tempath
+                saveaudio.uploaded_by_id = request.user.id
+                saveaudio.url = link
+                saveaudio.save()
+                return saveaudio.id
+            return audio_object_check.id
     else:
         return -1    
 

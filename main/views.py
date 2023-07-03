@@ -15,6 +15,7 @@ from .ytdown import download
 from . models import Audio,TimeStamp
 from . models import Audio
 from .sentiment import printAnalysis
+from django.contrib.auth.decorators import login_required
 def Login(request):
     if request.method == 'POST':
         username = request.POST.get('name')
@@ -29,7 +30,7 @@ def Login(request):
             # print("not found")
             pass
     return render(request, 'main/login.html')
-
+@login_required
 def Logout(request):
     logout(request)
     return redirect('/')
@@ -56,6 +57,8 @@ def sign_up(request):
         
 
     return render(request, 'main/signup.html',{'form':form})
+
+@login_required
 def Home(request):
     allaudios = Audio.objects.filter(uploaded_by=request.user.id)
     print(allaudios)
@@ -63,7 +66,7 @@ def Home(request):
             'allaudios':allaudios
         }
     return render(request,'main/homepage.html',context)
-
+@login_required
 def askconvert(request):
 
     if request.method=='POST':
@@ -86,7 +89,7 @@ def askconvert(request):
             'allaudios':allaudios
         }
     return render(request,'main/homepage.html',context)
-
+@login_required
 def download_view(request):
     
     if request.method=='POST':
@@ -99,7 +102,7 @@ def download_view(request):
 
 
     return render(request, 'download.html', {'url': url})
-
+@login_required
 def audio_detail(request,pk):
     audio = Audio.objects.get(id=pk)
     print(request.POST.get('time'))
@@ -126,6 +129,7 @@ def editname(request,pk):
         "audio":audio,
     }
     return render(request,'main/pagetwo.html',context)
+@login_required
 def audio_display(request,pk):
     audio = Audio.objects.get(id=pk)
     timestamp=TimeStamp.objects.filter(audio=audio).all()
@@ -151,7 +155,7 @@ def delete_audio(request,pk):
     audio = Audio.objects.get(id=pk)
     audio.delete()
     return redirect('/homepage/')
-
+@login_required
 def Analytics(request,pk):
     # print(getURL(request))
     audio = Audio.objects.get(id=pk)
@@ -159,7 +163,7 @@ def Analytics(request,pk):
         print(Audio.objects.get(id=pk).url)
         printAnalysis(request,Audio.objects.get(id=pk).url)
     return redirect('/audio_analysis/' + str(pk))
-
+@login_required
 def Analysis(request,pk):
     audio = Audio.objects.get(id=pk)
     pr=(audio.positive)/(audio.negative+audio.positive)
