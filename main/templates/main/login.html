@@ -296,6 +296,11 @@
     <div class="login-wrapper">
       <form class="form" method="post" action="{% url 'login' %}">
         {% csrf_token %}
+        {% if messages %}
+        {% for message in messages %}
+        <div style="text-align: center;color: red;padding-bottom: 35px;margin-top: -22px;">{{ message }}</div>
+        {% endfor %}       
+        {% endif %}
         <h2 style="color: rgb(110, 0, 220)">Login</h2>
         <div class="input-group" style="color: rgb(110, 0, 220);">
           <input
@@ -336,5 +341,7 @@
         
       </form>
     </div>
+    <script>
+    </script>
   </body>
 </html>

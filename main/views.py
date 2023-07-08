@@ -6,17 +6,36 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login,logout
 from django.core.files.base import ContentFile
 from .models  import upload
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.contrib import messages
 import urllib.request
 import secrets
 import random
+from functools import wraps
 from django.core.files.storage import default_storage
 import string
 from .ytdown import download
 from . models import Audio,TimeStamp
 from . models import Audio
 from .sentiment import printAnalysis
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
+
+def login_required(view_func):
+    @wraps(view_func)
+    def wrapped_view(request, *args, **kwargs):
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
+            # Send a warning message
+            messages.warning(request, "Please log in to access this page.")
+            # Redirect to login page
+            return redirect('login')  # Replace 'login' with your login URL name
+        
+        # User is authenticated, proceed with the original view function
+        return view_func(request, *args, **kwargs)
+
+    return wrapped_view
+
+
 def Login(request):
     if request.method == 'POST':
         username = request.POST.get('name')
@@ -26,11 +45,10 @@ def Login(request):
             login(request, user)
             return redirect('/homepage/')
         else:
-            print(user)
-            # Display an error message
-            # print("not found")
-            pass
+            messages.warning(request,"Incorrect username and/or password")
+            return redirect('login')
     return render(request, 'main/login.html')
+
 @login_required
 def Logout(request):
     logout(request)
@@ -67,6 +85,7 @@ def Home(request):
             'allaudios':allaudios
         }
     return render(request,'main/homepage.html',context)
+
 @login_required
 def askconvert(request):
 
@@ -90,6 +109,7 @@ def askconvert(request):
             'allaudios':allaudios
         }
     return render(request,'main/homepage.html',context)
+
 @login_required
 def download_view(request):
     
@@ -101,8 +121,8 @@ def download_view(request):
         else:
             return render(request,'main/noaudio.html') 
 
-
     return render(request, 'download.html', {'url': url})
+
 @login_required
 def audio_detail(request,pk):
     audio = Audio.objects.get(id=pk)
@@ -130,6 +150,7 @@ def editname(request,pk):
         "audio":audio,
     }
     return render(request,'main/pagetwo.html',context)
+
 @login_required
 def audio_display(request,pk):
     audio = Audio.objects.get(id=pk)
@@ -143,6 +164,7 @@ def audio_display(request,pk):
     }
     return render(request,'main/detail.html',context)
 
+@login_required
 def deletecomment(request,pk):
     if request.method=='POST':
         print(pk)
@@ -152,8 +174,9 @@ def deletecomment(request,pk):
         
     return redirect('/audio_detail/' + str(id))
 
+@login_required
 def delete_audio(request,pk):
-    audio = Audio.objects.get(id=pk)
+    audio = Audio.objects.get(id=pk,uploaded_by=request.user)
     path='./main/static'+audio.audioFile.url
     print(path,default_storage.exists(path))
     default_storage.delete(path)
@@ -168,6 +191,7 @@ def Analytics(request,pk):
     if audio.positive==0 and audio.negative==0 and audio.neutral==0:
         printAnalysis(request,Audio.objects.get(id=pk).url)
     return redirect('/audio_analysis/' + str(pk))
+
 @login_required
 def Analysis(request, pk):
     audio = Audio.objects.get(id=pk)
