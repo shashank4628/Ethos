@@ -10,6 +10,7 @@ from django.shortcuts import render
 import urllib.request
 import secrets
 import random
+from django.core.files.storage import default_storage
 import string
 from .ytdown import download
 from . models import Audio,TimeStamp
@@ -61,7 +62,7 @@ def sign_up(request):
 @login_required
 def Home(request):
     allaudios = Audio.objects.filter(uploaded_by=request.user.id)
-    print(allaudios)
+    # print(allaudios)
     context = {
             'allaudios':allaudios
         }
@@ -153,8 +154,12 @@ def deletecomment(request,pk):
 
 def delete_audio(request,pk):
     audio = Audio.objects.get(id=pk)
+    path='./main/static'+audio.audioFile.url
+    print(path,default_storage.exists(path))
+    default_storage.delete(path)
     audio.delete()
     return redirect('/homepage/')
+
 @login_required
 def Analytics(request,pk):
     # print(getURL(request))

@@ -6,37 +6,52 @@ import yt_dlp
 import datetime
 import ytdl
 import subprocess
+import string
+import random
+
+def generate_random_string(length):
+    """Generate a random string of fixed length"""
+    letters = string.ascii_letters
+    return ''.join(random.choice(letters) for _ in range(length))
+
+def generate_unique_name(length=8):
+    """Generate a unique name for the audio file"""
+    while True:
+        name = generate_random_string(length)
+        # Check if the name already exists in the database
+        if not Audio.objects.filter(url='main/audio/'+name+'.webm').exists():
+            return name
+
 def download(link,request):
     # ytdl audio link
+    audio_file = generate_unique_name()
     output_directory = "main/static/main/audio/"
-    output_format = output_directory+'%(title)s.%(ext)s'
+    output_format = output_directory+audio_file+'.%(ext)s'
     user =request.user
+    audio_object_check = Audio.objects.filter(uploaded_by = user,url = link).exists()
+    if audio_object_check:
+        return Audio.objects.filter(uploaded_by = user,url = link).first().id
 
     with YoutubeDL() as ydl: 
         info_dict = ydl.extract_info(link, download=False)
         video_title = info_dict.get('title', None)
         command = ['yt-dlp', '-x', '--audio-format', 'mp3', '-o', output_format, link]
         videos = subprocess.run(command, capture_output=True)
-    if videos.returncode==0:
-            vars=subprocess.run(['mv','ethos/'+str(video_title)+'.mp3','~/main/static/main/audio'])
+    if videos.returncode in [0,1]:
+            vars=subprocess.run(['mv','ethos/'+audio_file+'.webm','~/main/static/main/audio'])
             print(vars.returncode)
             # path='main/static/main/audio/'
-            audio_objects_check = Audio.objects.filter(uploaded_by = user)
-            audio_object_check = audio_objects_check.filter(url = link).first()
-            if not audio_object_check:
-
-                filename=str(video_title)+'.mp3'
-                path='main/audio/'
-                tempath=path +filename
-                saveaudio=Audio()
-                saveaudio.audioname = str(video_title)
-                saveaudio.url = link
-                saveaudio.audioFile=tempath
-                saveaudio.uploaded_by_id = request.user.id
-                saveaudio.url = link
-                saveaudio.save()
-                return saveaudio.id
-            return audio_object_check.id
+            filename=audio_file+'.webm'
+            path='main/audio/'
+            tempath=path +filename
+            saveaudio=Audio()
+            saveaudio.audioname = str(video_title)
+            saveaudio.url = link
+            saveaudio.audioFile=tempath
+            saveaudio.uploaded_by_id = request.user.id
+            saveaudio.url = link
+            saveaudio.save()
+            return saveaudio.id
     else:
         return -1    
 
